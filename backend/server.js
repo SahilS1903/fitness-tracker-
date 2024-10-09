@@ -5,6 +5,7 @@ const userRoutes = require("./routes/userRoutes");
 const workoutRoutes = require("./routes/workoutRoutes");
 
 const cors = require("cors"); // Add this line
+const path = require('path');
 
 dotenv.config();
 connectDB();
@@ -15,7 +16,7 @@ app.use(express.json());
 // Add CORS middleware here
 app.use(
   cors({
-    origin: "http://localhost:3000", // Change this to your frontend URL
+    origin: "http://localhost:3001", // Change this to your frontend URL
   })
 );
 
@@ -27,3 +28,6 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -6,16 +6,20 @@ const workoutSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  type: {
+  exercise: {
     type: String,
     required: true,
   },
-  duration: {
-    type: Number, // in minutes
+  sets: {
+    type: Number,
     required: true,
   },
-  caloriesBurned: {
-    type: Number,
+  repsPerSet: {
+    type: [Number],
+    required: true,
+  },
+  muscleGroup: {
+    type: String,
     required: true,
   },
   date: {
@@ -24,6 +28,4 @@ const workoutSchema = new mongoose.Schema({
   },
 });
 
-const Workout = mongoose.model("Workout", workoutSchema);
-
-module.exports = Workout;
+module.exports = mongoose.model("Workout", workoutSchema);

@@ -21,8 +21,8 @@ const VerifyEmail = () => {
   }, [token]);
 
   return (
-    <div>
-      <h1>{message}</h1>
+    <div className="text-center flex justify-center items-center">
+      <h1 className="text-6xl">{message}</h1>
     </div>
   );
 };

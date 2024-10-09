@@ -3,6 +3,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const verificationEmail = require("../emailTemplates/verificationEmail");
+const util = require("util");
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -20,15 +21,6 @@ const registerUser = async (req, res) => {
     // Create a verification token
     const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
-    });
-   
-
-    // Create a new user
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      verificationToken,
     });
 
     // Create a transporter object
@@ -50,23 +42,26 @@ const registerUser = async (req, res) => {
       html: emailContent,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).json({
-          message: "Failed to send verification email",
-          error: error.message,
-        });
-      }
+    // Use promisify to convert sendMail to a promise-based function
+    const sendMailPromise = util.promisify(transporter.sendMail).bind(transporter);
 
-      res.status(201).json({
-        message:
-          "User registered. Please check your email to verify your account.",
-      });
+    // Send the email
+    await sendMailPromise(mailOptions);
+
+    // If email sent successfully, create the user in the database
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      verificationToken,
+    });
+
+    res.status(201).json({
+      message: "User registered. Please check your email to verify your account.",
     });
   } catch (error) {
     console.error("Error registering user:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Failed to register user. Please try again." });
   }
 };
 
@@ -123,9 +118,111 @@ const verifyEmail = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password"); // Exclude password field
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    
+
+    const { email, name, password, height, weight, gender, age } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.name = name || user.name;
+    user.height = height || user.height;
+    user.weight = weight || user.weight;
+    user.gender = gender || user.gender;
+    user.age = age || user.age;
+
+    if (req.file) {
+      user.profileImage = `/uploads/${req.file.filename.replace(/\\/g, '/')}`;
+      
+    }
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      profileImage: updatedUser.profileImage,
+      height: updatedUser.height,
+      weight: updatedUser.weight,
+      gender: updatedUser.gender,
+      age: updatedUser.age,
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ message: 'Error updating profile', error: error.message });
+  }
+};
+
+const contactUs = async (req, res) => {
+  const { name, email, message } = req.body;
+
+  try {
+    // Create a transporter object
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: "ftracker60@gmail.com", // The email address you want to receive contact form submissions
+      subject: "New Contact Form Submission",
+      html: `
+        <h1>New Contact Form Submission</h1>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({ message: "Your message has been sent successfully!" });
+  } catch (error) {
+    console.error("Error sending contact form email:", error);
+    res
+      .status(500)
+      .json({
+        message: "Failed to send your message. Please try again later.",
+      });
+  }
+};
 
 module.exports = {
   registerUser,
   loginUser,
   verifyEmail,
+  getUserById,
+  updateProfile,
+  contactUs,
 };

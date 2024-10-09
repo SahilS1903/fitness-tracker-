@@ -36,11 +36,9 @@ const Register = () => {
         "Registration successful. Please check your email to verify your account."
       );
     } catch (error) {
-      console.error(
-        "Error registering:",
-        error.response?.data || error.message
-      );
-      toast.error("Error registering user");
+      const errorMessage =
+        error.response?.data?.message || error.response?.data || error.message;
+      toast.error(errorMessage);
     }
   };
 

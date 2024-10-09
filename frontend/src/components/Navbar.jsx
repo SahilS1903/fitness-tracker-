@@ -1,74 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Logo from "../assets/Logo.png";
 import Hamburger from "hamburger-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import NavLink from "../components/NavLink"; // Import NavLink
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const [isMenu, setIsMenu] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState("Home");
-  const { isAuthenticated, logout } = useAuth(); // Use AuthContext
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false); // State to control dropdown visibility
+  const { isAuthenticated, user, logout } = useAuth(); // Use AuthContext for user info and logout
+  const location = useLocation(); // Get current location
 
   const toggleMenu = () => {
     setIsMenu(!isMenu);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible); // Toggle dropdown visibility
+  };
+  
 
   return (
     <div className="w-full animate-slideInFromTop">
       {/* Navbar */}
       <div className="w-full h-20 flex items-center justify-between">
         <div>
-          <img src={Logo} className="w-24" alt="Logo" />
+          <img src="/FitnessAppLogo.png" className="w-16 border border-gray-400 rounded-full" alt="Logo" />
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex relative gap-4">
-          <Link
-            to="/"
-            className={`cursor-pointer ${
-              isMenuOpen === "Home"
-                ? "text-black border-b-2 text-sm border-black"
-                : "text-gray-500"
-            }`}
-            onClick={() => setIsMenuOpen("Home")}
-          >
+          <NavLink to="/" className="cursor-pointer">
             Home
-          </Link>
-          <Link
-            to="/Features"
-            className={`cursor-pointer  ${
-              isMenuOpen === "Features"
-                ? "text-black border-b-2 text-sm border-black"
-                : "text-gray-500"
-            }`}
-            onClick={() => setIsMenuOpen("Features")}
-          >
+          </NavLink>
+          <NavLink to="/Features" className="cursor-pointer">
             Features
-          </Link>
-          <Link
-            to="/AboutUs"
-            className={`cursor-pointer ${
-              isMenuOpen === "About Us"
-                ? "text-black border-b-2 text-sm border-black"
-                : "text-gray-500"
-            }`}
-            onClick={() => setIsMenuOpen("About Us")}
-          >
+          </NavLink>
+          <NavLink to="/AboutUs" className="cursor-pointer">
             About Us
-          </Link>
-          <Link
-            to="/ContactUs"
-            className={`cursor-pointer ${
-              isMenuOpen === "Contact Us"
-                ? "text-black border-b-2 text-xs border-black"
-                : "text-gray-500"
-            }`}
-            onClick={() => setIsMenuOpen("Contact Us")}
-          >
+          </NavLink>
+          <NavLink to="/ContactUs" className="cursor-pointer">
             Contact Us
-          </Link>
+          </NavLink>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -81,32 +58,56 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Desktop Login/Register or Logout */}
-        <div className="hidden md:flex items-center justify-between gap-4">
+        {/* Desktop User Menu */}
+        <div className="hidden md:flex items-center justify-between gap-4 relative">
           {!isAuthenticated ? (
             <>
               <Link
                 to="/SignIn"
-                className="cursor-pointer text-sm text-gray-500"
-                onClick={() => setIsMenuOpen("")}
+                className="cursor-pointer text-xl text-gray-500"
               >
                 Login
               </Link>
               <Link
                 to="/Register"
-                className="cursor-pointer text-sm text-gray-500"
-                onClick={() => setIsMenuOpen("")}
+                className="cursor-pointer text-xl text-gray-500"
               >
                 Register
               </Link>
             </>
           ) : (
-            <button
-              onClick={logout}
-              className="cursor-pointer flex items-center gap-1 text-sm text-gray-500"
-            >
-              <FiLogOut size={20} /> Logout
-            </button>
+            <div className="relative">
+              <span
+                className="cursor-pointer text-xl text-gray-500 flex gap-2"
+                onClick={toggleDropdown}
+              >
+                {user?.name || "User"}
+                <FontAwesomeIcon icon={faCaretDown} />
+
+                {/* Show the logged-in user's name */}
+              </span>
+              {/* Dropdown Menu */}
+              {isDropdownVisible && (
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <Link
+                    to="/profile/update-profile"
+                    className="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsDropdownVisible(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsDropdownVisible(false);
+                    }}
+                    className="w-full text-left block px-4 py-2 text-xl text-gray-700 hover:bg-gray-100"
+                  >
+                    <FiLogOut size={20} className="inline mr-2" /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -115,87 +116,62 @@ const Navbar = () => {
       {isMenu && (
         <AnimatePresence>
           <motion.div className="flex flex-col md:hidden gap-2 p-4">
-            <Link
-              to="/"
-              className={`cursor-pointer text-sm ${
-                isMenuOpen === "Home" ? "text-black" : "text-gray-500"
-              }`}
-              onClick={() => {
-                setIsMenuOpen("Home");
-                toggleMenu();
-              }}
-            >
+            <NavLink to="/" onClick={toggleMenu}>
               Home
-            </Link>
-            <Link
-              to="/Features"
-              className={`cursor-pointer text-sm ${
-                isMenuOpen === "Features" ? "text-black" : "text-gray-500"
-              }`}
-              onClick={() => {
-                setIsMenuOpen("Features");
-                toggleMenu();
-              }}
-            >
+            </NavLink>
+            <NavLink to="/Features" onClick={toggleMenu}>
               Features
-            </Link>
-            <Link
-              to="/AboutUs"
-              className={`cursor-pointer text-sm ${
-                isMenuOpen === "About Us" ? "text-black" : "text-gray-500"
-              }`}
-              onClick={() => {
-                setIsMenuOpen("About Us");
-                toggleMenu();
-              }}
-            >
+            </NavLink>
+            <NavLink to="/AboutUs" onClick={toggleMenu}>
               About Us
-            </Link>
-            <Link
-              to="/ContactUs"
-              className={`cursor-pointer text-sm ${
-                isMenuOpen === "Contact Us" ? "text-black" : "text-gray-500"
-              }`}
-              onClick={() => {
-                setIsMenuOpen("Contact Us");
-                toggleMenu();
-              }}
-            >
+            </NavLink>
+            <NavLink to="/ContactUs" onClick={toggleMenu}>
               Contact Us
-            </Link>
+            </NavLink>
             {!isAuthenticated ? (
               <>
                 <Link
                   to="/SignIn"
                   className="cursor-pointer text-sm text-gray-500"
-                  onClick={() => {
-                    setIsMenuOpen("");
-                    toggleMenu();
-                  }}
+                  onClick={toggleMenu}
                 >
                   Login
                 </Link>
                 <Link
                   to="/Register"
                   className="cursor-pointer text-sm text-gray-500"
-                  onClick={() => {
-                    setIsMenuOpen("");
-                    toggleMenu();
-                  }}
+                  onClick={toggleMenu}
                 >
                   Register
                 </Link>
               </>
             ) : (
-              <button
-                onClick={() => {
-                  logout();
-                  toggleMenu();
-                }}
-                className="cursor-pointer flex items-center gap-1 text-sm text-gray-500"
-              >
-                <FiLogOut size={20} /> Logout
-              </button>
+              <div className="relative ">
+                <span
+                  className="cursor-pointer text-sm flex gap-2 text-gray-500"
+                  onClick={toggleDropdown}
+                >
+                  {user?.name || "User"}
+                  <FontAwesomeIcon icon={faCaretDown} />
+                </span>
+                {isDropdownVisible && (
+                  <div className=" left-0 mt-0 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                    <Link
+                      to="/profile/update-profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsDropdownVisible(false)}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <FiLogOut size={20} className="inline mr-2" /> Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </motion.div>
         </AnimatePresence>

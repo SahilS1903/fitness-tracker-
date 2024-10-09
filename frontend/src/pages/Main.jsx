@@ -11,13 +11,16 @@ const Main = () => {
     <div className="flex flex-col gap-10 w-[90%] m-auto">
       <div className="flex flex-col items-center md:flex-row gap-8 mt-10 ">
         <div className="flex flex-col items-start gap-4 animate-slideInFromLeft">
-          <h1 className="text-5xl font-bold">Shape Up</h1>
+          <h1 className="text-5xl font-bold">FitFusion</h1>
           <p className="text-4xl font-semibold">
             We are here to help you achieve your fitness dreams.
           </p>
-          <button className="bg-green-600 p-2 mt-2 text-white rounded-md">
+          <Link
+            to={"/Features"}
+            className="bg-green-600 p-2 mt-2 text-white rounded-md"
+          >
             WHAT WE OFFER
-          </button>
+          </Link>
         </div>
         <div>
           <img className="animate-slideInFromRight" src={banner} alt="Banner" />
@@ -61,7 +64,7 @@ const Main = () => {
               Start your fitness journey today!
             </h3>
             <p>
-              Sign up for Shape Up and get started on your path to a healthier
+              Sign up for FitFusion and get started on your path to a healthier
               lifestyle.
             </p>
           </div>
