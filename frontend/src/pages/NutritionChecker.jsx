@@ -23,7 +23,7 @@ const NutritionChecker = () => {
         )}`,
         {
           headers: {
-            "X-Api-Key": "WOO23cTA4ww2yrQ+otISmw==Z3Q2fFBcCTeE3OWj",
+            "X-Api-Key": import.meta.env.VITE_NUTRITION_RAPID_API_HOST,
           },
         }
       );

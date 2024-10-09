@@ -18,8 +18,8 @@ const WorkoutDatabase = () => {
       method: "GET",
       url: `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${isExercise}`,
       headers: {
-        "X-RapidAPI-Key": "fd225db093msh5d65459b41877b2p18f96bjsna415a48d27d0",
-        "X-RapidAPI-Host": "exercisedb.p.rapidapi.com",
+        "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
+        "X-RapidAPI-Host": import.meta.env.VITE_RAPID_API_HOST,
       },
     };
 
