@@ -26,6 +26,7 @@ ChartJS.register(
   TimeScale
 )
 
+
 const exerciseData = {
   Chest: ['Bench Press', 'Push-ups', 'Chest Flyes'],
   Back: ['Pull-ups', 'Rows', 'Deadlifts'],
@@ -35,6 +36,7 @@ const exerciseData = {
   Core: ['Planks', 'Crunches', 'Russian Twists']
 };
 
+
 const WorkoutDetails = () => {
   const { user } = useAuth()
   const [workoutData, setWorkoutData] = useState({
@@ -42,6 +44,7 @@ const WorkoutDetails = () => {
     exercise: '',
     sets: '',
     repsPerSet: [],
+    weightPerSet: [],
   });
   const [filteredExercises, setFilteredExercises] = useState([]);
   const [pastWorkouts, setPastWorkouts] = useState([])
@@ -57,7 +60,8 @@ const WorkoutDetails = () => {
       setWorkoutData(prev => ({
         ...prev,
         [name]: value,
-        repsPerSet: Array(newSets).fill('')
+        repsPerSet: Array(newSets).fill(''),
+        weightPerSet: Array(newSets).fill('')
       }));
     } else {
       setWorkoutData(prev => ({ ...prev, [name]: value }));
@@ -68,6 +72,12 @@ const WorkoutDetails = () => {
     const newRepsPerSet = [...workoutData.repsPerSet];
     newRepsPerSet[index] = value;
     setWorkoutData(prev => ({ ...prev, repsPerSet: newRepsPerSet }));
+  }
+
+  const handleWeightChange = (index, value) => {
+    const newWeightPerSet = [...workoutData.weightPerSet];
+    newWeightPerSet[index] = value;
+    setWorkoutData(prev => ({ ...prev, weightPerSet: newWeightPerSet }));
   }
 
   const handleMuscleGroupChange = (e) => {
@@ -92,12 +102,13 @@ const WorkoutDetails = () => {
     try {
       const response = await axios.post('/api/workouts', {
         ...workoutData,
-        repsPerSet: workoutData.repsPerSet.map(rep => parseInt(rep || 0))
+        repsPerSet: workoutData.repsPerSet.map(rep => parseInt(rep || 0)),
+        weightPerSet: workoutData.weightPerSet.map(weight => parseFloat(weight || 0))
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('jwttoken')}` }
       })
       // console.log('Workout added:', response.data)
-      setWorkoutData({ muscleGroup: '', exercise: '', sets: '', repsPerSet: [] })
+      setWorkoutData({ muscleGroup: '', exercise: '', sets: '', repsPerSet: [], weightPerSet: [] })
       fetchPastWorkouts()
     } catch (error) {
       console.error('Error adding workout:', error.response?.data || error.message)
@@ -136,6 +147,10 @@ const WorkoutDetails = () => {
       const totalReps = item.repsPerSet.reduce((sum, reps) => sum + reps, 0);
       return totalReps / item.sets; // Average reps per set
     });
+    const weightData = analyticsData.map(item => {
+      const totalWeight = item.weightPerSet.reduce((sum, weight) => sum + weight, 0);
+      return totalWeight / item.sets; // Average weight per set
+    });
 
     return {
       labels: dates,
@@ -150,6 +165,12 @@ const WorkoutDetails = () => {
           label: 'Average Reps per Set',
           data: repData,
           borderColor: 'rgb(255, 99, 132)',
+          tension: 0.1
+        },
+        {
+          label: 'Average Weight per Set',
+          data: weightData,
+          borderColor: 'rgb(54, 162, 235)',
           tension: 0.1
         }
       ]
@@ -171,6 +192,7 @@ const WorkoutDetails = () => {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
@@ -241,16 +263,27 @@ const WorkoutDetails = () => {
         {workoutData.sets && parseInt(workoutData.sets) > 0 && (
           <div className="mt-4 grid grid-cols-4 gap-4">
             {Array.from({ length: parseInt(workoutData.sets) }, (_, index) => (
-              <input
-                key={index}
-                type="number"
-                value={workoutData.repsPerSet[index] || ''}
-                onChange={(e) => handleRepsChange(index, e.target.value)}
-                placeholder={`Reps for Set ${index + 1}`}
-                className="border p-2 rounded"
-                required
-                min="1"
-              />
+              <React.Fragment key={index}>
+                <input
+                  type="number"
+                  value={workoutData.repsPerSet[index] || ''}
+                  onChange={(e) => handleRepsChange(index, e.target.value)}
+                  placeholder={`Reps for Set ${index + 1}`}
+                  className="border p-2 rounded"
+                  required
+                  min="1"
+                />
+                <input
+                  type="number"
+                  value={workoutData.weightPerSet[index] || ''}
+                  onChange={(e) => handleWeightChange(index, e.target.value)}
+                  placeholder={`Weight for Set ${index + 1}`}
+                  className="border p-2 rounded"
+                  required
+                  min="0"
+                  step="0.1"
+                />
+              </React.Fragment>
             ))}
           </div>
         )}
@@ -291,6 +324,12 @@ const WorkoutDetails = () => {
                         <li key={idx}>Set {idx + 1}: {reps} reps</li>
                       ))}
                     </ul>
+                    <p><strong>Weight per Set:</strong></p>
+                    <ul className="list-disc pl-5">
+                      {workout.weightPerSet.map((weight, idx) => (
+                        <li key={idx}>Set {idx + 1}: {weight} kg</li>
+                      ))}
+                    </ul>
                     <p><strong>Date:</strong> {new Date(workout.date).toLocaleDateString()}</p>
                   </div>
                 </div>
@@ -327,7 +366,7 @@ const WorkoutDetails = () => {
           </button>
         </div>
         {analyticsData && (
-          <div className="mt-4">
+          <div className="mt-4 w-full xl:w-3/4  md:min-h-96 h-56">
             <Line data={prepareChartData()} options={chartOptions} />
           </div>
         )}

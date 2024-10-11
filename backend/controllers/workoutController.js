@@ -1,13 +1,13 @@
 const Workout = require("../models/Workout");
 
 const addWorkout = async (req, res) => {
-  const { exercise, sets, repsPerSet, muscleGroup } = req.body;
+  const { exercise, sets, repsPerSet, weightPerSet, muscleGroup } = req.body;
   const userId = req.user.id;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   try {
-    console.log('Received workout data:', { exercise, sets, repsPerSet, muscleGroup, userId });
+    // console.log('Received workout data:', { exercise, sets, repsPerSet, weightPerSet, muscleGroup, userId });
 
     // Check if there's an existing workout for the same exercise today
     const existingWorkout = await Workout.findOne({
@@ -20,6 +20,7 @@ const addWorkout = async (req, res) => {
       // Update existing workout
       existingWorkout.sets += parseInt(sets);
       existingWorkout.repsPerSet = existingWorkout.repsPerSet.concat(repsPerSet.map(rep => parseInt(rep)));
+      existingWorkout.weightPerSet = existingWorkout.weightPerSet.concat(weightPerSet.map(weight => parseFloat(weight)));
       const updatedWorkout = await existingWorkout.save();
       res.status(200).json(updatedWorkout);
     } else {
@@ -29,6 +30,7 @@ const addWorkout = async (req, res) => {
         exercise,
         sets: parseInt(sets),
         repsPerSet: repsPerSet.map(rep => parseInt(rep)),
+        weightPerSet: weightPerSet.map(weight => parseFloat(weight)),
         muscleGroup,
         date: new Date()
       });
@@ -65,6 +67,7 @@ const getWorkoutAnalytics = async (req, res) => {
       date: w.date.toISOString().split('T')[0],
       sets: w.sets,
       repsPerSet: w.repsPerSet,
+      weightPerSet: w.weightPerSet,
     }));
 
     res.json(analytics);

@@ -8,7 +8,7 @@ const ProfileLayout = () => {
   return (
     <div className="flex flex-col md:flex-row mt-10 gap-4">
       {/* Sidebar for Profile Navigation */}
-      <aside className="w-full md:w-72 h-52  bg-gray-200 border-2 border-blue-700 rounded-md">
+      <aside className="w-full md:w-72 h-24  bg-gray-200 border-2 border-blue-700 rounded-md">
         <ul className="flex flex-col  ">
           <NavLink to="/profile/update-profile" setIsActive={setIsActive}>
             Update Profile
@@ -16,12 +16,12 @@ const ProfileLayout = () => {
           <NavLink to="/profile/workout-details" setIsActive={setIsActive}>
             Workout Details
           </NavLink>
-          <NavLink to="/profile/meal-plan" setIsActive={setIsActive}>
+          {/* <NavLink to="/profile/meal-plan" setIsActive={setIsActive}>
             Meal Plan
           </NavLink>
           <NavLink to="/profile/water-intake" setIsActive={setIsActive}>
             Water Intake
-          </NavLink>
+          </NavLink> */}
           {/* Add more links as needed */}
         </ul>
       </aside>

@@ -1,6 +1,8 @@
 import React from "react";
-import banner from "../assets/banner.png";
-import banner2 from "../assets/banner2.png";
+import Lottie from "lottie-react";
+// import banner from "../assets/banner.png"; // Remove this line
+import bannerAnimation from "../assets/banner-animation.json"; // Add this line
+import bannerAnimation2 from "../assets/banner-animation2.json";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -8,8 +10,8 @@ const Main = () => {
   const { isAuthenticated } = useAuth(); // Get authentication state
 
   return (
-    <div className="flex flex-col gap-10 w-[90%] m-auto">
-      <div className="flex flex-col items-center md:flex-row gap-8 mt-10 ">
+    <div className="flex flex-col items-center gap-10 w-[90%] m-auto">
+      <div className="flex flex-col items-center justify-center  md:grid md:grid-cols-2  gap-8 mt-10 ">
         <div className="flex flex-col items-start gap-4 animate-slideInFromLeft">
           <h1 className="text-5xl font-bold">FitFusion</h1>
           <p className="text-4xl font-semibold">
@@ -23,7 +25,11 @@ const Main = () => {
           </Link>
         </div>
         <div>
-          <img className="animate-slideInFromRight" src={banner} alt="Banner" />
+          <Lottie
+            animationData={bannerAnimation}
+            className="animate-slideInFromRight w-[100%]"
+            // Adjust size as needed
+          />
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-4">
@@ -86,7 +92,11 @@ const Main = () => {
           )}
         </div>
         <div className="animate-slideInFromRight">
-          <img src={banner2} className="" alt="Banner 2" />
+          <Lottie
+            animationData={bannerAnimation2}
+            className="animate-slideInFromRight w-[90%]"
+            // Adjust size as needed
+          />
         </div>
       </div>
     </div>

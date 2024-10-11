@@ -80,16 +80,16 @@ const Features = () => {
       link: "/Register",
     },
     {
-      title: "Meal Planner",
+      title: "Workout Analytics",
       description:
-        "Plan your meals for the day with our Meal Planner, saving time and promoting healthier eating habits!",
-      link: "/profile/meal-plan",
+        "Visualize your fitness journey with detailed charts and graphs. Track your progress, identify trends, and optimize your workouts for better results.",
+      link: "/profile/workout-details",
     },
     {
-      title: "Water Intake Log",
+      title: "Update Profile",
       description:
-        "Track your daily water intake and ensure you stay hydrated by logging the amount of water you drink each day.",
-      link: "/profile/water-intake",
+        "Update your profile information to keep your account up to date.",
+      link: "/profile/update-profile",
     },
   ];
 

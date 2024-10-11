@@ -26,6 +26,10 @@ const workoutSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  weightPerSet: {
+    type: [Number],
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Workout", workoutSchema);
