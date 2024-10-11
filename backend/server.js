@@ -16,7 +16,7 @@ app.use(express.json());
 // Add CORS middleware here
 app.use(
   cors({
-    origin: "http://localhost:3001", // Change this to your frontend URL
+    origin: `${process.env.CLIENT_URL}`, // Change this to your frontend URL
   })
 );
 

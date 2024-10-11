@@ -1,15 +1,19 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      "/api": "http://localhost:5000",
-      "/uploads": "http://localhost:5000"
-    }
-  },
-  optimizeDeps: {
-    include: ['chartjs-adapter-date-fns']
-  }
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  return {
+    plugins: [react()],
+    server: {
+      port: env.VITE_PORT,
+      proxy: {
+        "/api": env.REACT_APP_API_URL,
+        "/uploads": env.REACT_APP_API_URL,
+      },
+    },
+    optimizeDeps: {
+      include: ["chartjs-adapter-date-fns"],
+    },
+  };
 });
