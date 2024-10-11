@@ -8,7 +8,7 @@ const Footer = () => {
       <div className=" flex justify-center gap-2 items-center w-[80%] scale-50 sm:scale-75 md:scale-90 lg:scale-100">
         <img src="/FitnessAppLogo.png" className="w-12 rounded-xl border border-white" alt="ShapeUp Logo" />
         <p className="text-2xl text-nowrap ">
-          Copyright 2024 ShapeUp.com - All Rights Reserved.
+          Copyright 2024 FitFusion.com - All Rights Reserved.
         </p>
       </div>
     </footer>
