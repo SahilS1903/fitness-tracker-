@@ -85,7 +85,7 @@ To run the project locally, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/fitfusion.git
+   git clone https://github.com/SahilS1903/fitness-tracker-.git
    ```
 
 2. Navigate to the frontend directory:
