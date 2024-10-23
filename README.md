@@ -1,6 +1,6 @@
 # FitFusion - Fitness Tracker App
 
-![FitFusion Logo](path/to/your/logo.png)
+![FitFusion Logo](frontend/public/FitnessAppLogo.jpeg)
 
 ## Table of Contents
 
