@@ -85,7 +85,7 @@ To run the project locally, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/fitfusion.git
+   git clone https://github.com/SahilS1903/fitness-tracker-.git
    ```
 
 2. Navigate to the frontend directory:
@@ -141,6 +141,4 @@ Contributions are welcome! Please follow these steps to contribute:
 4. Push to the branch (`git push origin feature/YourFeature`).
 5. Open a pull request.
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
