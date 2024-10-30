@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from "../assets/Logo.png";
+
 import Hamburger from "hamburger-react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
