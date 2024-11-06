@@ -37,11 +37,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (token) => {
-    localStorage.setItem("jwttoken", token);
-    const decodedToken = jwtDecode(token);
-    fetchUser(decodedToken.id); // Fetch user using the decoded id
-    setIsAuthenticated(true);
+  const login = async (token) => {
+    try {
+      localStorage.setItem("jwttoken", token);
+      const decodedToken = jwtDecode(token);
+      await fetchUser(decodedToken.id); // Fetch user using the decoded id
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error("Failed to log in:", error);
+      logout(); // Log out if login fails
+    }
   };
 
   const logout = () => {
