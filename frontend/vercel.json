@@ -4,7 +4,15 @@
       "source": "/api/:path*",
       "destination": "https://fitness-tracker-backend-thmg.onrender.com/api/:path*"
     },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
-  "routes": [{ "src": "/uploads/(.*)", "dest": "/uploads/$1" }]
+  "routes": [
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/uploads/$1"
+    }
+  ]
 }
