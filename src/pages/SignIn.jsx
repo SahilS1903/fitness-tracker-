@@ -33,8 +33,9 @@ const SignIn = () => {
       navigate("/");
     } catch (error) {
       // Display error toast if login fails
-      console.error("Error signing in:", error.response?.data || error.message);
-      toast.error("Login failed, please try again!");
+       const errorMessage = error.response?.data?.message || error.message;
+       console.error("Error signing in:", errorMessage);
+       toast.error(`Error signing in: ${errorMessage}`);
     } finally {
       setLoading(false); // Stop loading
     }
