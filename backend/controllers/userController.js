@@ -10,9 +10,13 @@ const registerUser = async (req, res) => {
 
   try {
     // Check if user already exists
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email,isVerified: true });
+    const userNotVerified = await User.findOne({ email,isVerified: false });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
+    }
+    if (userNotVerified) {
+      await userNotVerified.deleteOne();
     }
 
     // Hash the password
@@ -55,6 +59,8 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       verificationToken,
     });
+
+    await user.save();
 
     res.status(201).json({
       message: "User registered. Please check your email to verify your account.",
